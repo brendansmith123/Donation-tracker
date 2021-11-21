@@ -1,11 +1,13 @@
 from flask import Flask, render_template, request, redirect, url_for
 from pymongo import MongoClient
 from bson.objectid import ObjectId
+import datetime
 import os
 
-host = os.environ.get("DB_URL")
-client = MongoClient(host=host)
-db = client.DonationTracker
+uri = os.environ.get('MONGODB_URI')#DonationTracker 
+client = MongoClient(uri)
+db = client.get_default_database()
+
 donations = db.donations
 
 app = Flask(__name__)
@@ -19,15 +21,23 @@ def donations_index():
 def donation_recent():
     return render_template('donations_new.html')
 
-@app.route('/donations', methods=['POST'])
+@app.route('/donations/create', methods=['POST'])
 def donation_applied():
+    print(request.form.get('name'))
     donation = {
-        'name': request.form.get('donation-name'),
+        'name': request.form.get('name'),
         'amount': request.form.get('amount'),
-        'date': request.form.get('date'),
+        'rating': request.form.get('rating'),
+        'description': request.form.get('description'),
+        'date': datetime.datetime.now()
       }
-    donations.insert_one(donation)
-    return redirect(url_for('donations_index'))
+    donation_id=donations.insert_one(donation).inserted_id
+    return redirect(url_for('donation_show',donation_id=donation_id))
+
+@app.route('/donations/<donation_id>')
+def donation_show(donation_id):
+    current_donation=donations.find_one({'_id': ObjectId(donation_id)})
+    return render_template('donations_show.html', donation=current_donation)
 
 @app.route('/donations/<donation_id>/remove', methods=['POST'])
 def donation_removed(donation_id):
