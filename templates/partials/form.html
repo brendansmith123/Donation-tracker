@@ -3,22 +3,22 @@
     
     <p>
         <label for='donation-name'>Title</label><br>
-        <input type='text' name='title' value='{{ donation.name }}'/>
+        <input type='text' name='title' value=''/>
     </p>
     
     <p>
       <label for='description'>Description</label><br>
-      <input type='text' name='description' value='{{ donation.description }}' />
+      <input type='text' name='description' value='' />
     </p>
   
     <p>
       <label for='amount'>Amount</label><br>
-      <input value='{{ donation.amount }}' type='text' name='amount'/>
+      <input type='number'>
     </p>
   
     <p>
       <label for='rating'>Rating</label><br>
-      <select value='{{ donation.rating }}' name='rating'>
+      <select value='donation.rating' name='rating'>
         <option value="1">1</option>
         <option value="2">2</option>
         <option value="3">3</option>

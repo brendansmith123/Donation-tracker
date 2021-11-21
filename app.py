@@ -11,12 +11,9 @@ donations = db.donations
 app = Flask(__name__)
 
 @app.route('/')
-def donation_index(): 
-    donates=list(donations.find())
-    for i in range(len(donates)):
-      donates[i]['amount'] = float(donates[i]['amount'])
-    donates.sort(key=lambda x: x['date'], reverse=False)
-    return render_template("donations_index.html", donations=donates)
+def donations_index():
+    '''Show all donations.'''
+    return render_template('donations_index.html', donations=donations.find())
 
 @app.route('/donations/new')
 def donation_recent():
