@@ -3,14 +3,14 @@ from pymongo import MongoClient
 from bson.objectid import ObjectId
 import datetime
 import os
-
+app = Flask(__name__)
 uri = os.environ.get('MONGODB_URI', 'mongodb://localhost:27017/DonationTracker')#DonationTracker 
 client = MongoClient(uri)
 db = client.get_default_database()
 
 donations = db.donations
 charities=db.charities
-app = Flask(__name__)
+
 
 @app.route('/')
 def donations_index():
