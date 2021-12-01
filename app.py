@@ -44,5 +44,43 @@ def donation_removed(donation_id):
     donations.delete_one({'_id': ObjectId(donation_id)})
     return redirect(url_for('donations_index'))
 
+# charity index
+@app.route('/charities')
+def charities_index():
+  return render_template('charity_index.html', charities=charities.find())
+
+@app.route('/charities/new', methods=['POST'])
+def charities_new():
+  return render_template('add_charity.html')
+
+
+@app.route('/charities', methods=['POST'])
+def charity_submit():
+  charity = {
+    'charity_name': request.form.get('charity_name'),
+  }
+
+  charities.insert_one(charity)
+  return redirect(url_for('charity_index'))
+
+
+@app.route('/charities/<charity_name>')
+def charity_profile(charity_name):
+  charity = charities.find_one({'name': charity_name})
+  return render_template('add_charity.html', charity=charity, donations = donations.find({'charity_name': charity_name}))
+
+
+@app.route('/charities/<charity_name>', methods=['POST'])
+def charities_update(charity_name):
+  updated_charity = {
+    'name': request.form.get('charity_name'),
+  }
+  charities.update_one(
+    {'name': charity_name},
+    {'$set': updated_charity}
+  )
+
+
+
 if __name__ == '__main__':
-    app.run(debug=True)
+  app.run(debug=True)
